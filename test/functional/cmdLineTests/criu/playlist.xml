@@ -48,4 +48,30 @@
 		</impls>
 	</test>
 
+	<test>
+		<testCaseName>cmdLineTest_criu_security</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>
+			$(JAVA_COMMAND) $(JVM_OPTIONS) -Xdump \
+			-DSCRIPPATH=$(TEST_RESROOT)$(D)criuSecurityScript.sh -DTEST_RESROOT=$(TEST_RESROOT) \
+			-DJAVA_COMMAND=$(JAVA_COMMAND) -DJVM_OPTIONS=$(JVM_OPTIONS) \
+			-jar $(CMDLINETESTER_JAR) -config $(Q)$(TEST_RESROOT)$(D)criu.xml$(Q) \
+			-explainExcludes -xids all,$(PLATFORM),$(VARIATION) -nonZeroExitWhenError; \
+			$(TEST_STATUS)
+		</command>
+		<features>
+			<feature>CRIU:required</feature>
+		</features>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
 </playlist>

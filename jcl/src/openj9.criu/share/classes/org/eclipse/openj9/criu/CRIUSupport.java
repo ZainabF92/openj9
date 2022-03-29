@@ -519,6 +519,10 @@ public final class CRIUSupport {
 		/* Add env variables restore hook */
 		registerRestoreEnvVariables();
 
+		/* Add security provider hooks */
+		SecurityProviders.registerResetDigests();
+		SecurityProviders.registerRestoreSecurityProviders();
+
 		if (InternalCRIUSupport.isCheckpointAllowed()) {
 			checkpointJVMImpl(imageDir, leaveRunning, shellJob, extUnixSupport, logLevel, logFile, fileLocks, workDir,
 					tcpEstablished, autoDedup, trackMemory);

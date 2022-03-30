@@ -145,6 +145,11 @@ public final class CRIUSupport {
 	 */
 	private static final int RESTORE_ENVIRONMENT_VARIABLES_PRIORITY = 100;
 	private static final int USER_HOOKS_PRIORITY = 1;
+	/* RESET_DIGESTS_PRIORITY and RESTORE_SECURITY_PROVIDERS_PRIORITY need to
+	 * be higher than any other JVM hook that may require security providers
+	 */
+	static final int RESET_DIGESTS_PRIORITY = 100;
+	static final int RESTORE_SECURITY_PROVIDERS_PRIORITY = 100;
 
 	private String imageDir;
 	private boolean leaveRunning;
@@ -518,6 +523,10 @@ public final class CRIUSupport {
 	public synchronized void checkpointJVM() {
 		/* Add env variables restore hook */
 		registerRestoreEnvVariables();
+
+		/* Add security provider hooks */
+		SecurityProviders.registerResetDigests();
+		SecurityProviders.registerRestoreSecurityProviders();
 
 		if (InternalCRIUSupport.isCheckpointAllowed()) {
 			checkpointJVMImpl(imageDir, leaveRunning, shellJob, extUnixSupport, logLevel, logFile, fileLocks, workDir,

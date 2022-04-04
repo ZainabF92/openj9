@@ -94,7 +94,6 @@ Java_openj9_internal_criu_InternalCRIUSupport_isCRIUSupportEnabledImpl(JNIEnv *e
 		}
 #endif /* defined(LINUX) */
 	}
-	setupJNIFieldIDs(env);
 
 	return res;
 }
@@ -257,6 +256,10 @@ Java_org_eclipse_openj9_criu_CRIUSupport_checkpointJVMImpl(JNIEnv *env,
 	UDATA msgCharLength = 0;
 	IDATA systemReturnCode = 0;
 	PORT_ACCESS_FROM_VMC(currentThread);
+
+	if (NULL == vm->criuJVMCheckpointExceptionClass) {
+ 		setupJNIFieldIDs(env);
+ 	}
 
 	vm->checkpointState.checkpointThread = currentThread;
 

@@ -26,10 +26,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.io.PrintStream;
 import java.io.File;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.Security;
 
 import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 
 import org.eclipse.openj9.criu.CRIUSupport;
 

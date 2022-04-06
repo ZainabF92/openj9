@@ -47,7 +47,7 @@ public class CRIUSecurityTest {
     try {
       Cipher c = Cipher.getInstance("AES", "SunJCE");
       error("Getting an AES Cipher did not throw an exception");
-    } catch (Exception e) {
+    } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException e) {
       // expected
     }
 

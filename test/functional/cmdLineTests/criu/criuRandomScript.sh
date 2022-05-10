@@ -23,19 +23,22 @@
 #
 
 echo "start running script"
-# the expected arguments are:
-# $1 is the TEST_ROOT
-# $2 is the JAVA_COMMAND
-# $3 is the JVM_OPTIONS
-$2 $3 -Denable.j9internal.checkpoint.security.api.debug=true -XX:+EnableCRIUSupport -cp $1/criu.jar CRIURandomTest >testOutput 2>&1
-sleep 2
-criu restore -D cpData --shell-job >firstRestore 2>&1
-sleep 2
-criu restore -D cpData --shell-job >secondRestore 2>&1
-cat testOutput
-if cmp -s firstRestore secondRestore
+if [ "$4" == "Checkpoint" ]
 then
-    echo "ERR: Restoring the same image multiple times results in the same random values."
+    # the expected arguments are:
+    # $1 is the TEST_ROOT
+    # $2 is the JAVA_COMMAND
+    # $3 is the JVM_OPTIONS
+    $2 $3 -XX:+EnableCRIUSupport -cp $1/criu.jar CRIURandomTest >>testOutput 2>&1
 fi
-rm -rf testOutput firstRestore secondRestore
+if [ "$4" == "FirstRestore" ] || [ "$4" == "SecondRestore" ]
+then
+    sleep 2
+    criu restore -D cpData --shell-job
+fi
+cat testOutput
+if [ "$4" == "SecondRestore" ]
+then
+    rm -rf testOutput
+fi
 echo "finished script"

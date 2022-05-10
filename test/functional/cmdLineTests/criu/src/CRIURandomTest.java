@@ -20,25 +20,61 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR LicenseRef-GPL-2.0 WITH Assembly-exception
  *******************************************************************************/
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
 
 public class CRIURandomTest {
 
-    public static void main(String args[]) {
-        Random r1 = new Random();
-        System.out.println("Pre-checkpoint");
+	public static void main(String args[]) {
+		Random r1 = new Random();
+		System.out.println("Pre-checkpoint");
 
-        r1.nextInt();
-        r1.nextInt();
+		r1.nextInt();
+		r1.nextInt();
 
-        CRIUTestUtils.checkPointJVM(Paths.get("cpData"));
-        System.out.println("Post-checkpoint");
+		CRIUTestUtils.checkPointJVM(Paths.get("cpData"), false);
+		System.out.println("Post-checkpoint");
 
-        System.out.println(r1.nextInt());
-        System.out.println(r1.nextInt());
-        System.out.println(r1.nextInt());
-        System.out.println(r1.nextInt());
-        System.out.println(r1.nextInt());
-    }
+		String testResultsFile = "testResults";
+		Path testResultsFilePath = Paths.get(testResultsFile);
+		try {
+			if (Files.exists(testResultsFilePath)) {
+				System.out.println("Second Restore");
+				BufferedReader reader = new BufferedReader(new FileReader(testResultsFile));
+				String line = null;
+				boolean sameValues = true;
+				while ((line = reader.readLine()) != null) {
+					int val = Integer.parseInt(line);
+					if (val != r1.nextInt()) {
+						sameValues = false;
+					}
+				}
+				reader.close();
+				if (sameValues) {
+					System.out.println("ERR: Same random values");
+				} else {
+					System.out.println("Different random values");
+				}
+				Files.deleteIfExists(testResultsFilePath);
+			} else {
+				System.out.println("First Restore");
+				PrintWriter writer = new PrintWriter(new FileWriter(testResultsFile));
+				writer.println(r1.nextInt());
+				writer.println(r1.nextInt());
+				writer.println(r1.nextInt());
+				writer.println(r1.nextInt());
+				writer.println(r1.nextInt());
+				writer.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

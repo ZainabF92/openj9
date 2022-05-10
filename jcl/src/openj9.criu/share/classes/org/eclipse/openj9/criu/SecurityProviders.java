@@ -48,7 +48,7 @@ public final class SecurityProviders {
 		J9InternalCheckpointHookAPI.registerPreCheckpointHook(
 				CRIUSupport.RESET_DIGESTS_PRIORITY,
 				"Reset the digests", //$NON-NLS-1$
-				() -> com.ibm.security.criu.CRIUSECProvider.resetDigests()
+				() -> openj9.internal.criu.CRIUSECProvider.resetDigests()
 		);
 	}
 
